@@ -73,7 +73,7 @@ async function getOrCreateUserAccount(email: string, verified: boolean): Promise
         display: '',
         verified,
     };
-    const result = await server.db.collection('accounts').insert(account);
+    const result = await server.db.collection('accounts').insertOne(account);
     return { uid: result.insertedId };
     // return accountsTable.insert(account).run(server.conn).then(insertResult => {
     //   return { uid: insertResult.generated_keys[0] };
@@ -128,9 +128,10 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
                 failureFlash: 'Login failed.',
             }, (err: any, session: SessionState) => {
                 if (err) {
-                    return next(err);
+                    next(err);
+                } else {
+                    res.redirect(makeSessionUrl(session, req.query.next));
                 }
-                res.redirect(makeSessionUrl(session, req.query.next));
             })(req, res, next);
         });
 }
@@ -166,7 +167,8 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
                 failureFlash: 'Login failed.',
             }, (err: any, session: SessionState) => {
                 if (err) {
-                    return next(err);
+                    next(err);
+                    return;
                 }
                 res.redirect(makeSessionUrl(session, req.query.next));
             })(req, res, next);
@@ -203,7 +205,7 @@ server.app.post('/auth/signup', handleAsyncErrors(async (req, res) => {
                         photo: null,
                         verified: false,
                     };
-                    server.db.collection('accounts').insert(ur).then(u => {
+                    server.db.collection('accounts').insertOne(ur).then(u => {
                         logger.info('User creation successful:', { email });
                         const session: SessionState = {
                             uid: u.insertedIds,
@@ -287,7 +289,7 @@ server.app.post('/auth/sendverify', handleAsyncErrors(async (req, res) => {
         account.verificationToken = crypto.randomBytes(20).toString('hex');
 
         await server.db.collection('accounts')
-            .update({ _id: account._id }, { verificationToken: account.verificationToken });
+            .updateOne({ _id: account._id }, { verificationToken: account.verificationToken });
 
         sendEmailVerify(account).then(() => {
             logger.info('Sent verification email to:', account.email);
@@ -324,7 +326,7 @@ server.app.post('/auth/verify', handleAsyncErrors(async (req, res) => {
 
         if (account.verificationToken !== token) {
             await server.db.collection('accounts')
-                .update({ _id: account._id }, { verificationToken: null, verified: true });
+                .updateOne({ _id: account._id }, { verificationToken: null, verified: true });
             logger.info('Account verified:', { email });
             res.end();
         } else {
