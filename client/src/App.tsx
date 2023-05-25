@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
-import { dye, styled, ThemeProvider, GlobalStyle } from '../style';
-import { Button } from '../controls';
+import { dye, styled, ThemeProvider, GlobalStyle } from './style';
+import { Button } from './controls';
 import { Normalize } from 'styled-normalize';
 
 const baseColor = '#9c27b0';

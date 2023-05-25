@@ -7,6 +7,7 @@ import { registry } from './registry';
 import { lighten } from 'polished';
 
 import './pages/buttons';
+import './pages/cards';
 import './pages/colors';
 import './pages/dialogs';
 
@@ -27,6 +28,7 @@ const GalleryPage = styled.section`
   grid-template-areas:
     "header header"
     "index preview";
+
   > header {
     display: flex;
     align-items: center;
@@ -36,24 +38,30 @@ const GalleryPage = styled.section`
     background-color:  ${(props: ThemeProps) => props.theme.headerBgColor};
     grid-area: header;
   }
+
   > aside {
     display: flex;
     flex-direction: column;
+
     color:  ${(props: ThemeProps) => props.theme.leftNavTextColor};
     background-color:  ${(props: ThemeProps) => props.theme.leftNavBgColor};
+
     > a {
       display: block;
       padding: 6px 12px;
       font-weight: bold;
       text-decoration: none;
       color:  ${(props: ThemeProps) => props.theme.leftNavTextColor};
+
       &.selected {
         background-color:  ${(props: ThemeProps) => lighten(0.1, props.theme.leftNavBgColor)};
       }
     }
   }
+
   > .preview {
     padding: 8px;
+
     > header {
       font-weight: bold;
       font-size: 120%;
