@@ -40,6 +40,22 @@ export interface ThemeInterface {
         secondary: ButtonColors;
     };
 
+    // Tabs
+    tabTextColor: dye(0.4, diluted),
+    tabBgColor: 'transparent',
+    tabBorderColor: dye(0.8, primary),
+    tabActiveTextColor: dye(0.2, primary),
+    tabActiveBgColor: dye(0.85, primary),
+    tabActiveBorderColor: dye(0.4, primary),
+
+    // Tabs
+    tabTextColor: string;
+    tabBgColor: string;
+    tabBorderColor: string;
+    tabActiveTextColor: string;
+    tabActiveBgColor: string;
+    tabActiveBorderColor: string;
+
     // Dialogs
     dialogBackdropColor: string;
     dialogBgColor: string;
@@ -54,15 +70,14 @@ export interface ThemeInterface {
 
     // contentBgColor: string;
 
-    // // Cards
-    // // cardBgColor: string;
-    // cardBgAlt: string;
+    // Cards
     cardBgColor: string;
     cardBorderColor: string;
     cardShadowColor: string;
 
     cardHeaderBgColor: string;
     cardHeaderDividerColor: string;
+    // cardBgAlt: string;
 
     // accentedCardHeaderBgColor: bg2;
 
