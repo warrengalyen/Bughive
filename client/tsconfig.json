@@ -10,6 +10,7 @@
         "jsx": "react",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "esModuleInterop": true,
         "types": [
             "dom",
             "node"
