@@ -25,7 +25,10 @@ export interface ThemeInterface {
 
     // Page
     pageBgColor: string;
-    headerTextColor: string;
+    headerTitleColor: string;
+    headerSubTitleColor: string;
+
+    // Header
     headerBgColor: string;
 
     // Left Nav

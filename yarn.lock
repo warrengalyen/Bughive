@@ -1813,7 +1813,7 @@
   dependencies:
     es6-promise "*"
 
-"@types/express-serve-static-core@^4.17.21", "@types/express-serve-static-core@^4.17.33":
+"@types/express-serve-static-core@*", "@types/express-serve-static-core@^4.17.21", "@types/express-serve-static-core@^4.17.33":
   version "4.17.35"
   resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.35.tgz#c95dd4424f0d32e525d23812aa8ab8e4d3906c4f"
   integrity sha512-wALWQwrgiB2AWTT91CB62b6Yt0sNHpznUXeZEcnPU3DRdlDIz74x8Qg1UUYKSVFi+va5vKOLYRBI1bRKiLLKIg==
@@ -1962,6 +1962,13 @@
   integrity sha512-a1iY62/a3yhZ7qH7cNUsxoI3U/0Fe9+RnuFrpTKr+0WVOzbKlSLojShCKe20aOD1Sppv+i8Zlq0pLDuTJnwS4A==
   dependencies:
     "@types/node" "*"
+
+"@types/parcel-bundler@^1.10.1":
+  version "1.12.5"
+  resolved "https://registry.yarnpkg.com/@types/parcel-bundler/-/parcel-bundler-1.12.5.tgz#785c5a714c021030da248091b2d3f4d2b80d26e2"
+  integrity sha512-S/8tN3NMT60NPOtEOh075druSjpj/Qws5rnaQcEANQy2CZljMkkIlxkYScrRfs3cYXdCxDAZMMV1LTT/a3dSOw==
+  dependencies:
+    "@types/express-serve-static-core" "*"
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"

@@ -1,13 +1,7 @@
 # TODO
 
-* Proxy Server / Bundle
-
 # Components
 
-* Checkbox
-* Radio Button
-* Switch
-* NavLink
 * AutoComplete
 * Table
   * Header
@@ -15,8 +9,7 @@
   * Checkbox Column
 * DiscloseButton
 * RelativeDate
-* * DropDownButton
-* 
+
 # Form controls
 
 * placeholder text
