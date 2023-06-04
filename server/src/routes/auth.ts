@@ -64,7 +64,9 @@ interface SessionState {
 }
 
 async function getOrCreateUserAccount(email: string, verified: boolean): Promise<SessionState> {
-    const accounts = await server.db.collection('accounts').find<AccountRecord>({ email }).toArray();
+
+    const accounts = await server.db.collection('accounts')
+        .find<AccountRecord>({ email }, { }).toArray();
     if (accounts.length > 0) {
         return { uid: accounts[0]._id };
     }
@@ -186,7 +188,7 @@ authRouter.post('/signup', handleAsyncErrors(async (req, res) => {
     if (email.length < 3) {
         res.status(400).json({ error: Errors.INVALID_EMAIL });
     } else if (password.length < 5) {
-        res.status(400).json({ error: Errors.PASSWORD_TOO_SHORT });
+        res.status(400).json({ error: Errors.TEXT_TOO_SHORT });
     } else {
         // console.log('signup', username, fullname);
         const users = await server.db.collection('accounts').find({ email }).toArray();
@@ -234,7 +236,9 @@ authRouter.post('/login', handleAsyncErrors(async (req, res) => {
         return;
     }
 
-    const accounts = await server.db.collection('accounts').find<AccountRecord>({ email }).toArray();
+    // @ts-ignore
+    const accounts = await server.db.collection('accounts')
+        .find<AccountRecord>({ email }, { }).toArray();
     if (accounts.length === 0) {
         res.status(404).json({ error: Errors.NOT_FOUND });
     } else if (accounts.length > 1) {
@@ -275,7 +279,8 @@ server.app.post('/auth/sendverify', handleAsyncErrors(async (req, res) => {
         return;
     }
 
-    const accounts = await server.db.collection('accounts').find<AccountRecord>({ email }).toArray();
+    const accounts = await server.db.collection('accounts')
+        .find<AccountRecord>({ email }, { }).toArray();
     if (accounts.length === 0) {
         logger.error('Attempt to verify unknown email:', { email });
         res.status(404).json({ error: Errors.NOT_FOUND });
@@ -313,7 +318,8 @@ authRouter.post('/verify', handleAsyncErrors(async (req, res) => {
         return;
     }
 
-    const accounts = await server.db.collection('accounts').find<AccountRecord>({ email }).toArray();
+    const accounts = await server.db.collection('accounts')
+        .find<AccountRecord>({ email }, { }).toArray();
     if (accounts.length === 0) {
         logger.error('Attempt to verify unknown email:', { email });
         res.status(404).json({ error: Errors.NOT_FOUND });

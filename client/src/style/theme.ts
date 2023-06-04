@@ -27,31 +27,23 @@ export interface ThemeInterface {
     pageBgColor: string;
     scrollbarThumbColor: string;
     scrollbarInactiveThumbColor: string;
-    headerTitleColor: string;
-    headerSubTitleColor: string;
 
     // Header
     headerBgColor: string;
+  headerTitleColor: string;
+  headerSubTitleColor: string;
 
     // Left Nav
     leftNavBgColor: string;
     leftNavTextColor: string;
 
-    // Button styles
-    buttonColors: {
-        default: ButtonColors;
-        action: ButtonColors;
-        primary: ButtonColors;
-        secondary: ButtonColors;
-    };
-
-    // Tabs
-    tabTextColor: dye(0.4, diluted),
-    tabBgColor: 'transparent',
-    tabBorderColor: dye(0.8, primary),
-    tabActiveTextColor: dye(0.2, primary),
-    tabActiveBgColor: dye(0.85, primary),
-    tabActiveBorderColor: dye(0.4, primary),
+  // Button styles
+  buttonColors: {
+    default: ButtonColors;
+    action: ButtonColors;
+    primary: ButtonColors;
+    secondary: ButtonColors;
+  };
 
     // Tabs
     tabTextColor: string;
@@ -77,6 +69,9 @@ export interface ThemeInterface {
     menuFocusTextColor: string;
     menuHoverBgColor: string;
     menuHoverTextColor: string;
+  menuActiveBgColor: string;
+  menuActiveTextColor: string;
+  menuDividerColor: string;
 
     // Forms
     inputBorderColor: string;
