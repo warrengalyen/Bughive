@@ -1,3 +1,10 @@
+import * as bcrypt from 'bcryptjs';
+import * as bodyParser from 'body-parser';
+import * as express from 'express';
+import * as jwt from 'jwt-simple';
+import * as passport from 'passport';
+import * as qs from 'qs';
+import * as crypto from 'crypto';
 import { Strategy as GithubStrategy } from 'passport-github2';
 import { Strategy as AnonymousStrategy } from 'passport-anonymous';
 import { Strategy as GoogleStrategy, VerifyCallback } from 'passport-google-oauth2';
@@ -5,11 +12,6 @@ import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { AccountRecord } from '../db/types';
 import { Errors } from '../../../common/types/json';
 import { logger } from '../logger';
-import * as bcrypt from 'bcryptjs';
-import * as jwt from 'jwt-simple';
-import * as passport from 'passport';
-import * as qs from 'qs';
-import * as crypto from 'crypto';
 import { URL } from 'url';
 import { server } from '../Server';
 import { sendEmailVerify } from '../mail';
@@ -39,13 +41,13 @@ function makeCallbackUrl(pathname: string, next?: string): string {
 
 function makeSessionUrl(session: SessionState, next?: string): string {
     const url = new URL(next || 'http://placeholder');
-    if (process.env.BH_CLIENT_HTTPS && process.env.BH_CLIENT_HTTPS !== 'false') {
+    if (process.env.KDT_CLIENT_HTTPS && process.env.KDT_CLIENT_HTTPS !== 'false') {
         url.protocol = 'https';
     }
-    url.hostname = process.env.BH_CLIENT_HOSTNAME;
+    url.hostname = process.env.KDT_CLIENT_HOSTNAME;
     // url.pathname = pathname;
-    if (process.env.BH_CLIENT_PORT && process.env.BH_CLIENT_PORT !== '80') {
-        url.port = process.env.BH_CLIENT_PORT;
+    if (process.env.KDT_CLIENT_PORT && process.env.KDT_CLIENT_PORT !== '80') {
+        url.port = process.env.KDT_CLIENT_PORT;
     }
     const query: any = {
         token: jwt.encode(session, jwtOpts.secretOrKey),
@@ -62,22 +64,19 @@ interface SessionState {
 }
 
 async function getOrCreateUserAccount(email: string, verified: boolean): Promise<SessionState> {
-    // @ts-ignore
     const accounts = await server.db.collection('accounts').find<AccountRecord>({ email }).toArray();
     if (accounts.length > 0) {
         return { uid: accounts[0]._id };
     }
     const account: AccountRecord = {
-        type: 'user',
+        type: 'USER',
         email,
         display: '',
         verified,
+        photo: null,
     };
     const result = await server.db.collection('accounts').insertOne(account);
     return { uid: result.insertedId };
-    // return accountsTable.insert(account).run(server.conn).then(insertResult => {
-    //   return { uid: insertResult.generated_keys[0] };
-    // });
 }
 
 // Will use JWT strategy and fall back to anonymous if they are not logged in.
@@ -89,12 +88,17 @@ server.app.use(
 // Set up JWT strategy
 passport.use(new JwtStrategy(jwtOpts, async (payload: SessionState, done) => {
     const account =
-        await server.db.collection('accounts').findOne<AccountRecord>({ _id: payload.uid });
-    done(null, account);
+        await server.db.collection('accounts')
+            .findOne<AccountRecord>({ _id: new ObjectID(payload.uid) });
+    done(null, account ? { ...account, password: undefined } : null);
 }));
 
 // Set up Anonymous strategy
 passport.use(new AnonymousStrategy());
+
+// Router for /auth paths
+const authRouter = express.Router();
+authRouter.use(bodyParser.json());
 
 // Google OAuth2 login.
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
@@ -111,7 +115,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
         }
     }));
 
-    server.app.get('/auth/google', (req, res, next) => {
+    authRouter.get('/google', (req, res, next) => {
         const options = {
             session: false,
             scope: ['openid', 'email', 'profile'],
@@ -120,7 +124,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
         passport.authenticate('google', options as passport.AuthenticateOptions)(req, res, next);
     });
 
-    server.app.get('/auth/google/callback',
+    authRouter.get('/google/callback',
         (req, res, next) => {
             passport.authenticate('google', {
                 session: false,
@@ -151,7 +155,7 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
         }
     }));
 
-    server.app.get('/auth/github', (req, res, next) => {
+    authRouter.get('/github', (req, res, next) => {
         const options = {
             session: false,
             // callbackURL: makeCallbackUrl('/auth/github/callback', req.query.next),
@@ -159,7 +163,7 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
         passport.authenticate('github', options as passport.AuthenticateOptions)(req, res, next);
     });
 
-    server.app.get('/auth/github/callback',
+    authRouter.get('/github/callback',
         (req, res, next) => {
             passport.authenticate('github', {
                 session: false,
@@ -176,7 +180,7 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
 }
 
 // Signup handler
-server.app.post('/auth/signup', handleAsyncErrors(async (req, res) => {
+authRouter.post('/signup', handleAsyncErrors(async (req, res) => {
     const { email, password } = req.body;
     // TODO: Validate email, username, fullname.
     if (email.length < 3) {
@@ -199,8 +203,8 @@ server.app.post('/auth/signup', handleAsyncErrors(async (req, res) => {
                     // console.log(user, fullname);
                     const ur: AccountRecord = {
                         email,
-                        type: 'user',
-                        display: null,
+                        type: 'USER',
+                        display: '',
                         password: hash,
                         photo: null,
                         verified: false,
@@ -208,7 +212,7 @@ server.app.post('/auth/signup', handleAsyncErrors(async (req, res) => {
                     server.db.collection('accounts').insertOne(ur).then(u => {
                         logger.info('User creation successful:', { email });
                         const session: SessionState = {
-                            uid: u.insertedIds,
+                            uid: u.insertedId,
                         };
                         const token = jwt.encode(session, jwtOpts.secretOrKey);
                         res.json({ token });
@@ -223,7 +227,7 @@ server.app.post('/auth/signup', handleAsyncErrors(async (req, res) => {
 }));
 
 // Login handler
-server.app.post('/auth/login', handleAsyncErrors(async (req, res) => {
+authRouter.post('/login', handleAsyncErrors(async (req, res) => {
     const { email, password } = req.body;
     if (!email || email.length < 3) {
         res.status(400).json({ error: Errors.INVALID_EMAIL });
@@ -280,7 +284,7 @@ server.app.post('/auth/sendverify', handleAsyncErrors(async (req, res) => {
         res.status(500).json({ error: Errors.CONFLICT });
     } else {
         const account = accounts[0];
-        if (account.type !== 'user') {
+        if (account.type !== 'USER') {
             logger.error('Attempt to verify email for organization:', { email });
             res.status(404).json({ error: Errors.NOT_FOUND });
             return;
@@ -301,7 +305,7 @@ server.app.post('/auth/sendverify', handleAsyncErrors(async (req, res) => {
 }));
 
 // Send verify email address
-server.app.post('/auth/verify', handleAsyncErrors(async (req, res) => {
+authRouter.post('/verify', handleAsyncErrors(async (req, res) => {
     const { email, token } = req.body;
     // TODO: Validate email, username, fullname.
     if (email.length < 3) {
@@ -318,7 +322,7 @@ server.app.post('/auth/verify', handleAsyncErrors(async (req, res) => {
         res.status(500).json({ error: Errors.CONFLICT });
     } else {
         const account = accounts[0];
-        if (account.type !== 'user') {
+        if (account.type !== 'USER') {
             logger.error('Attempt to verify email for organization:', { email });
             res.status(404).json({ error: Errors.NOT_FOUND });
             return;
@@ -335,3 +339,5 @@ server.app.post('/auth/verify', handleAsyncErrors(async (req, res) => {
         }
     }
 }));
+
+server.app.use('/auth', authRouter);
