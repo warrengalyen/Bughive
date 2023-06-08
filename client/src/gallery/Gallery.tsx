@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { hot } from 'react-hot-loader';
-import { NavLink, BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Normalize } from 'styled-normalize';
-import { themeDefault, styled, ThemeProvider, ThemeProps, GlobalStyle } from '../style';
-import { registry } from './registry';
-import { lighten } from 'polished';
+import {hot} from 'react-hot-loader';
+import {NavLink, BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import {Normalize} from 'styled-normalize';
+import {themeDefault, styled, ThemeProvider, GlobalStyle} from '../style';
+import {registry} from './registry';
+import {lighten} from 'polished';
 
 import './pages/buttons';
 import './pages/cards';
@@ -75,6 +75,7 @@ const GalleryPage = styled.section`
       font-size: 120%;
       margin-bottom: 8px;
       margin-top: 8px;
+
       &:first-child {
         margin-top: 0;
       }
@@ -94,8 +95,8 @@ class Gallery extends React.Component<{}> {
             <ThemeProvider theme={themeDefault}>
                 <Router>
                     <React.Fragment>
-                        <Normalize />
-                        <GlobalStyle />
+                        <Normalize/>
+                        <GlobalStyle/>
                         <GalleryPage>
                             <header>Bughive Component Gallery</header>
                             <aside>
@@ -105,7 +106,7 @@ class Gallery extends React.Component<{}> {
                             </aside>
                             <section className="preview">
                                 <Switch>
-                                    {keys.map(key => (<Route key={key} path={`/${key}`} render={registry[key]} />)}
+                                    {keys.map(key => (<Route key={key} path={`/${key}`} render={registry[key]}/>))}
                                 </Switch>
                             </section>
                         </GalleryPage>
