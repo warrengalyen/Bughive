@@ -1,7 +1,7 @@
 import { ThemeInterface, dye } from './theme';
 import { desaturate, transparentize } from 'polished';
 
-const primary = '#9c27b0';
+const primary = '#0099ff';
 const diluted = desaturate(0.2, primary);
 
 export const themeDefault: ThemeInterface = {

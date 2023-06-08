@@ -27,8 +27,12 @@ const ContentPaneLayout = styled.section`
   grid-area: main;
   padding: 0.6rem;
   > header {
+    align-items: center;
+    display: flex;
     font-weight: bold;
     font-size: 1.2rem;
+    justify-content: space-between;
+    margin-bottom: 1rem;
   }
 `;
 
@@ -68,10 +72,8 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
                 <ContentPaneLayout>
                     <Switch>
                         <Route path="/settings" component={SettingsView} />
-                        <Route
-                            path="/projects"
-                            component={ProjectListView}
-                        />
+                        <Route path="/projects" component={ProjectListView} />
+                        <Route path="/" component={ProjectListView} />
                     </Switch>
                 </ContentPaneLayout>
                 {/* {showEmailVerification && <EmailVerificationDialog />} */}

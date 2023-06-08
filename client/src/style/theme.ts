@@ -1,4 +1,4 @@
-import { shade, tint } from 'polished';
+import {shade, tint} from 'polished';
 
 /** Function to compute a lighter or darker variant of a base color. An amount of 0.5
  returns the base color unmodified; 1.0 returns pure white and 0.0 returns pure black. */
@@ -30,20 +30,20 @@ export interface ThemeInterface {
 
     // Header
     headerBgColor: string;
-  headerTitleColor: string;
-  headerSubTitleColor: string;
+    headerTitleColor: string;
+    headerSubTitleColor: string;
 
     // Left Nav
     leftNavBgColor: string;
     leftNavTextColor: string;
 
-  // Button styles
-  buttonColors: {
-    default: ButtonColors;
-    action: ButtonColors;
-    primary: ButtonColors;
-    secondary: ButtonColors;
-  };
+    // Button styles
+    buttonColors: {
+        default: ButtonColors;
+        action: ButtonColors;
+        primary: ButtonColors;
+        secondary: ButtonColors;
+    };
 
     // Tabs
     tabTextColor: string;
@@ -69,9 +69,9 @@ export interface ThemeInterface {
     menuFocusTextColor: string;
     menuHoverBgColor: string;
     menuHoverTextColor: string;
-  menuActiveBgColor: string;
-  menuActiveTextColor: string;
-  menuDividerColor: string;
+    menuActiveBgColor: string;
+    menuActiveTextColor: string;
+    menuDividerColor: string;
 
     // Forms
     inputBorderColor: string;
