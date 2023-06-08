@@ -11,7 +11,7 @@ export const Card = styled.section`
   &:last-child {
     margin-bottom: 0;
   }
-  > header, footer {
+  > header, > footer {
     align-items: center;
     background-color: ${(props: ThemeProps) => props.theme.cardHeaderBgColor};
     display: flex;
