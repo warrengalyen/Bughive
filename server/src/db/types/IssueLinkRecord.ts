@@ -1,5 +1,5 @@
 import { Relation } from 'bughive-json-types';
-import { ObjectID } from 'bson';
+import { ObjectID } from 'mongodb';
 
 export interface IssueLinkRecord {
     _id?: ObjectID;
