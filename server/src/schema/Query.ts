@@ -14,6 +14,8 @@ export const Query = gql`
         project(owner: String, name: String, id: ID): Project
         "Return a lists of all projects that the user belongs to."
         projects: [Project!]!
+        "Access a project by owner name and project. Returns project, account and members."
+        projectComponents(owner: String!, name: String!): ProjectComponents
         "Return a list of all project members."
         projectMembers(projectName: String!): [Membership!]!
     }

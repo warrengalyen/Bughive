@@ -51,4 +51,13 @@ export const Project = gql`
     "If true, indicates that this project is visible to the public."
     isPublic: Boolean!
   }
+
+  "Query result that returns project, owner account and memberships in a single operation."
+  type ProjectComponents {
+    project: Project!
+    account: PublicAccount!
+    # Prefs
+    # Milestones
+    # Template
+  }
 `;
