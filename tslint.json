@@ -10,7 +10,7 @@
     "jsx-no-lambda": false,
     "jsdoc-format": false,
     "label-position": true,
-    "max-line-length": [true, 100],
+    "max-line-length": [true, 120],
     "no-conditional-assignment": true,
     "no-console": false,
     "no-construct": true,

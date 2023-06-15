@@ -30,7 +30,7 @@ interface Props {
 }
 
 export class PhotoSelect extends React.Component<Props> {
-    private fileInput: HTMLInputElement;
+    private fileInput = React.createRef<HTMLInputElement>();
 
     public render() {
         const { className, value, defaultPhoto } = this.props;
@@ -45,7 +45,7 @@ export class PhotoSelect extends React.Component<Props> {
                     {!value && <div className="caption">Profile Photo</div>}
                 </PhotoPreview>
                 <input
-                    ref={el => { this.fileInput = el; }}
+                    ref={this.fileInput}
                     accept="image/*"
                     type="file"
                     onChange={this.onFileChange}
@@ -58,14 +58,14 @@ export class PhotoSelect extends React.Component<Props> {
     @action.bound
     private onChangeProfilePhoto(e: any) {
         e.preventDefault();
-        this.fileInput.click();
+        this.fileInput.current.click();
     }
 
     @action.bound
     private onFileChange(e: any) {
-        if (this.fileInput.files.length > 0) {
-            this.props.onChange(this.fileInput.files[0]);
+        if (this.fileInput.current.files.length > 0) {
+            this.props.onChange(this.fileInput.current.files[0]);
         }
-        this.fileInput.value = '';
+        this.fileInput.current.value = '';
     }
 }
