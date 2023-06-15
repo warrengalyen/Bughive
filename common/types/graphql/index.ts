@@ -1,44 +1,228 @@
 export type Maybe<T> = T | null;
 
+/** Query params for searching for issues. */
+export interface IssueQueryParams {
+  /** ID of the project containing the issues being queried. */
+  project: string;
+  /** Text search string. */
+  search?: Maybe<string>;
+  /** Query term that restricts the issue search to a set of types. */
+  type?: Maybe<string[]>;
+  /** Query term that restricts the issue search to a set of states. */
+  state?: Maybe<string[]>;
+  /** Query term that restricts the issue search to a set of owners. */
+  owner?: Maybe<string[]>;
+  /** Query term that restricts the issue search to a set of reporters. */
+  reporter?: Maybe<string[]>;
+  /** Query term that restricts the issue search to a set of CCs. */
+  cc?: Maybe<(Maybe<string>)[]>;
+  /** Query term that searches the summary field. */
+  summary?: Maybe<string>;
+  /** Search predicate for the summary field. */
+  summaryPred?: Maybe<Predicate>;
+  /** Query term that searches the description field. */
+  description?: Maybe<string>;
+  /** Search predicate for the description field. */
+  descriptionPred?: Maybe<Predicate>;
+  /** Query term that restricts the issue search to a set of label ids. */
+  labels?: Maybe<number[]>;
+  /** Specifies a list of linked issues to search for. */
+  linked?: Maybe<number[]>;
+  /** Query term that searches the issue comments. */
+  comment?: Maybe<string>;
+  /** 'Search predicate for the comments */
+  commentPred?: Maybe<Predicate>;
+
+  custom?: Maybe<CustomSearchInput[]>;
+  /** Query term that specifies the field sort order */
+  sort?: Maybe<string[]>;
+  /** Whether to show issues hierarchically (subtasks) */
+  subtasks?: Maybe<boolean>;
+}
+/** Query params for searching for issues via custom fields. */
+export interface CustomSearchInput {
+  name: string;
+
+  value?: Maybe<string>;
+
+  values?: Maybe<string[]>;
+}
+/** Pagination params. */
+export interface Pagination {
+  /** Limit on how many documents to retrieve */
+  limit?: Maybe<number>;
+  /** Offset of starting document */
+  offset?: Maybe<number>;
+}
 /** Data type for creating or updating an account. */
 export interface AccountInput {
-    /** Unique, user-visible account name of the account being changed. */
-    accountName: string;
-    /** Display name of this user or organization. */
-    display?: Maybe<string>;
-    /** Profile photo (URL). */
-    photo?: Maybe<string>;
-    /** User email address. */
-    email?: Maybe<string>;
+  /** Unique, user-visible account name of the account being changed. */
+  accountName: string;
+  /** Display name of this user or organization. */
+  display?: Maybe<string>;
+  /** Profile photo (URL). */
+  photo?: Maybe<string>;
+  /** User email address. */
+  email?: Maybe<string>;
 }
 /** Data type for creating or updating a project. */
 export interface ProjectInput {
-    /** Short description of the project. */
-    title: string;
-    /** A more detailed description of the project. */
-    description: string;
-    /** Issue template for this project. */
-    template?: Maybe<string>;
-    /** If true, indicates that this project is visible to the public. */
-    isPublic: boolean;
+  /** Short description of the project. */
+  title: string;
+  /** A more detailed description of the project. */
+  description: string;
+  /** Issue template for this project. */
+  template?: Maybe<string>;
+  /** If true, indicates that this project is visible to the public. */
+  isPublic: boolean;
+}
+/** Type for posting a new issue. */
+export interface IssueInput {
+  /** Issue type (defined by template). */
+  type: string;
+  /** Current workflow state. */
+  state: string;
+  /** One-line summary of the issue. */
+  summary: string;
+  /** Detailed description of the issue. */
+  description: string;
+  /** Username of current owner of this issue. */
+  owner?: Maybe<string>;
+  /** Users who wish to be informed when this issue is updated. */
+  cc?: Maybe<string[]>;
+  /** Labels associated with this issue. */
+  labels?: Maybe<string[]>;
+  /** List of custom fields for this issue. */
+  custom?: Maybe<CustomFieldInput[]>;
+  /** List of attachments. */
+  attachments?: Maybe<AttachmentInput[]>;
+  /** Whether this issue should be visible to non-members of the project. */
+  isPublic?: Maybe<boolean>;
+  /** X / Y position of issue in mural view. */
+  position?: Maybe<CoordInput>;
+  /** Milestone that we plan to address this issue in. */
+  milestone?: Maybe<string>;
+  /** List of issues linked to this one. */
+  linked?: Maybe<IssueLinkInput[]>;
+  /** List of comments. */
+  comments?: Maybe<string[]>;
+}
+/** Input for a custom field. */
+export interface CustomFieldInput {
+  key: string;
+
+  value: CustomValue;
+}
+/** File attachment input. */
+export interface AttachmentInput {
+  filename: string;
+
+  url: string;
+
+  thumbnail?: Maybe<string>;
+
+  type: string;
+}
+/** Represents a 2D coordinate Input. */
+export interface CoordInput {
+  x: number;
+
+  y: number;
+}
+/** Defines a relationship between one issue and another. */
+export interface IssueLinkInput {
+  /** ID of issue to which this is linked [projectId.id]. */
+  to: string;
+  /** Type of the relation. */
+  relation: Relation;
+}
+/** Used for adding / removing labels, cc users, attachments. */
+export interface IssueEdit {
+  addCC?: Maybe<string[]>;
+
+  removeCC?: Maybe<string[]>;
+
+  addLabels?: Maybe<string[]>;
+
+  removeLabels?: Maybe<string[]>;
+
+  addAttachments?: Maybe<AttachmentInput[]>;
+
+  removeAttachments?: Maybe<string[]>;
+}
+/** Input for milestone */
+export interface MilestoneInput {
+  /** Title of this milestone */
+  name: string;
+  /** Current status */
+  status: MilestoneStatus;
+  /** Milestone description */
+  description: string;
+  /** Planned start date of milestone */
+  startDate?: Maybe<DateTime>;
+  /** Planned end date of milestone */
+  endDate?: Maybe<DateTime>;
 }
 /** Type of account: user account or organizational account. */
 export enum AccountType {
-    User = "USER",
-    Organization = "ORGANIZATION"
+  User = "USER",
+  Organization = "ORGANIZATION"
+}
+/** Relation between two issues */
+export enum Relation {
+  BlockedBy = "BLOCKED_BY",
+  Blocks = "BLOCKS",
+  PartOf = "PART_OF",
+  HasPart = "HAS_PART",
+  Duplicate = "DUPLICATE",
+  Related = "RELATED"
+}
+/** Search predicates */
+export enum Predicate {
+  In = "IN",
+  Contains = "CONTAINS",
+  Equals = "EQUALS",
+  Match = "MATCH",
+  NotIn = "NOT_IN",
+  NotContains = "NOT_CONTAINS",
+  NotEquals = "NOT_EQUALS",
+  NotMatch = "NOT_MATCH",
+  StartsWith = "STARTS_WITH",
+  EndsWith = "ENDS_WITH",
+  Greater = "GREATER",
+  GreaterEqual = "GREATER_EQUAL",
+  Less = "LESS",
+  LessEqual = "LESS_EQUAL",
+  HasAny = "HAS_ANY",
+  HasAll = "HAS_ALL"
 }
 
 export enum ChangeAction {
-    Added = "ADDED",
-    Changed = "CHANGED",
-    Removed = "REMOVED"
-}
-export enum CacheControlScope {
-    Public = "PUBLIC",
-    Private = "PRIVATE"
+  Added = "ADDED",
+  Changed = "CHANGED",
+  Removed = "REMOVED"
 }
 
+export enum CacheControlScope {
+  Public = "PUBLIC",
+  Private = "PRIVATE"
+}
+/** Status of a milestone */
+export enum MilestoneStatus {
+  Pending = "PENDING",
+  Active = "ACTIVE",
+  Concluded = "CONCLUDED",
+  Timeless = "TIMELESS"
+}
+
+/** Date and time */
 export type DateTime = any;
+
+/** JSON object that has it's own schema */
+export type JsonObject = any;
+
+/** Used to represent custom field values. Can be a string, integer or boolean. */
+export type CustomValue = any;
 
 /** The `Upload` scalar type represents a file upload. */
 export type Upload = any;
@@ -52,139 +236,274 @@ export type Upload = any;
 // ====================================================
 
 export interface Query {
-    /** Access an account either by the account name or by the database id. */
-    account?: Maybe<PublicAccount>;
-    /** Search accounts by display name or account name. */
-    accounts: PublicAccount[];
-    /** Return information about the current user. */
-    me?: Maybe<Account>;
-    /** Return a list of all organization members. */
-    organizationMembers: Membership[];
-    /** Access a project by account/project name or by id. */
-    project?: Maybe<Project>;
-    /** Access a project by owner name and project. Returns project, account and members. */
-    projectComponents?: Maybe<ProjectComponents>;
-    /** Return a lists of all projects that the user belongs to. */
-    projects: Project[];
-    /** Return a list of all project members. */
-    projectMembers: Membership[];
+  /** Access an account either by the account name or by the database id. */
+  account?: Maybe<PublicAccount>;
+  /** Search accounts by display name or account name. */
+  accounts: PublicAccount[];
+  /** Return information about the current user. */
+  me?: Maybe<Account>;
+  /** Return a list of all organization members. */
+  organizationMembers: Membership[];
+  /** Access a project by account/project name or by id. */
+  project?: Maybe<Project>;
+  /** Return a lists of all projects that the user belongs to. */
+  projects: Project[];
+  /** Access a project by owner name and project. Returns project, account and members. */
+  projectContext?: Maybe<ProjectContext>;
+  /** Return a list of all project members. */
+  projectMembers: Membership[];
+  /** Look up a template by name. */
+  template?: Maybe<JsonObject>;
+  /** Retrieve an issue by id. */
+  issue?: Maybe<Issue>;
+  /** Retrieve issues which meet a set of filter criteria. */
+  issues: PaginatedIssues;
+  /** Search for issues by text query, sorted by relevance. */
+  issueSearch: Issue[];
+  /** Search custom field text, used for auto completion. */
+  searchCustomFields: string[];
 }
 
 /** Public information about a user or organization. */
 export interface PublicAccount {
-    /** Database id this user or organization. */
-    id: string;
-    /** Unique, user-visible account name of this user or organization. Null if not verified. */
-    accountName?: Maybe<string>;
-    /** Display name of this user or organization. */
-    display: string;
-    /** Whether this is a person or an organization. */
-    type: AccountType;
-    /** Profile photo (URL). */
-    photo?: Maybe<string>;
+  /** Database id this user or organization. */
+  id: string;
+  /** Unique, user-visible account name of this user or organization. Null if not verified. */
+  accountName?: Maybe<string>;
+  /** Display name of this user or organization. */
+  display: string;
+  /** Whether this is a person or an organization. */
+  type: AccountType;
+  /** Profile photo (URL). */
+  photo?: Maybe<string>;
 }
 
 /** Information about a user or organization. */
 export interface Account {
-    /** Database id this user or organization. */
-    id: string;
-    /** Unique, user-visible account name of this user or organization. Null if not verified. */
-    accountName?: Maybe<string>;
-    /** Display name of this user or organization. */
-    display: string;
-    /** Whether this is a person or an organization. */
-    type: AccountType;
-    /** Profile photo (URL). */
-    photo?: Maybe<string>;
-    /** User email address. */
-    email?: Maybe<string>;
-    /** Whether this account has been verified. Non-verified accounts have limited access. */
-    verified: boolean;
+  /** Database id this user or organization. */
+  id: string;
+  /** Unique, user-visible account name of this user or organization. Null if not verified. */
+  accountName?: Maybe<string>;
+  /** Display name of this user or organization. */
+  display: string;
+  /** Whether this is a person or an organization. */
+  type: AccountType;
+  /** Profile photo (URL). */
+  photo?: Maybe<string>;
+  /** User email address. */
+  email?: Maybe<string>;
+  /** Whether this account has been verified. Non-verified accounts have limited access. */
+  verified: boolean;
 }
 
 /** Stores the project-specific settings for a user: role, prefs, etc. */
 export interface Membership {
-    /** Database id of this record. */
-    id: string;
-    /** User id of project member. */
-    user: string;
-    /** If this is a project membership, database id of project. */
-    project?: Maybe<string>;
-    /** If this is an organization membership, database id of organization. */
-    organization?: Maybe<string>;
-    /** Access level for the this user (direct as project member). */
-    role?: Maybe<number>;
-    /** When the member was added to the project. */
-    createdAt: DateTime;
-    /** When the membership was last changed. */
-    updatedAt: DateTime;
+  /** Database id of this record. */
+  id: string;
+  /** User id of project member. */
+  user: string;
+  /** If this is a project membership, database id of project. */
+  project?: Maybe<string>;
+  /** If this is an organization membership, database id of organization. */
+  organization?: Maybe<string>;
+  /** Access level for the this user (direct as project member). */
+  role?: Maybe<number>;
+  /** When the member was added to the project. */
+  createdAt: DateTime;
+  /** When the membership was last changed. */
+  updatedAt: DateTime;
 }
 
 /** Project record. */
 export interface Project {
-    /** Unique ID of this project. */
-    id: string;
-    /** Account that owns this project. */
-    owner: string;
-    /** Denormalized owner name. */
-    ownerName: string;
-    /** Unique name of this project within an account. */
-    name: string;
-    /** Short description of the project. */
-    title: string;
-    /** A more detailed description of the project. */
-    description: string;
-    /** When this project was created. */
-    createdAt: DateTime;
-    /** When this project was last updated. */
-    updatedAt: DateTime;
-    /** Issue template for this project. */
-    template?: Maybe<string>;
-    /** If true, indicates that this project is visible to the public. */
-    isPublic: boolean;
-    /** Role of current user with respect to this project. */
-    role?: Maybe<number>;
+  /** Unique ID of this project. */
+  id: string;
+  /** Account that owns this project. */
+  owner: string;
+  /** Denormalized owner name. */
+  ownerName: string;
+  /** Unique name of this project within an account. */
+  name: string;
+  /** Short description of the project. */
+  title: string;
+  /** A more detailed description of the project. */
+  description: string;
+  /** When this project was created. */
+  createdAt: DateTime;
+  /** When this project was last updated. */
+  updatedAt: DateTime;
+  /** Issue template for this project. */
+  template?: Maybe<string>;
+  /** If true, indicates that this project is visible to the public. */
+  isPublic: boolean;
+  /** Role of current user with respect to this project. */
+  role?: Maybe<number>;
 }
 
 /** Query result that returns project, owner account and memberships in a single operation. */
-export interface ProjectComponents {
-    project: Project;
+export interface ProjectContext {
+  project: Project;
 
-    account: PublicAccount;
+  account: PublicAccount;
+
+  template: JsonObject;
+}
+
+/** An issue. */
+export interface Issue {
+  /** Unique id of this issue. [projectId.issueNum] */
+  id: string;
+  /** Date and time when the issue was created. */
+  createdAt: DateTime;
+  /** Date and time when the issue was last changed. */
+  updatedAt: DateTime;
+  /** Issue type (defined by template). */
+  type: string;
+  /** Current workflow state. */
+  state: string;
+  /** ID of the project this issue belongs to (owner/id). */
+  project: string;
+  /** Username of user that originally reported this issue. */
+  reporter: string;
+  /** Sort key for sorting by reporters. */
+  reporterSort?: Maybe<string>;
+  /** One-line summary of the issue. */
+  summary: string;
+  /** Detailed description of the issue. */
+  description: string;
+  /** Username of current owner of this issue. */
+  owner?: Maybe<string>;
+  /** Sort key for sorting by owners. */
+  ownerSort?: Maybe<string>;
+  /** Users who wish to be informed when this issue is updated. */
+  cc: string[];
+  /** Labels associated with this issue. */
+  labels: string[];
+  /** List of custom fields for this issue. */
+  custom: CustomField[];
+  /** List of attachments. */
+  attachments: Attachment[];
+  /** Links to other issues */
+  links: IssueLink[];
+  /** Whether this issue should be visible to non-members of the project. */
+  isPublic?: Maybe<boolean>;
+  /** X / Y position of issue in mural view. */
+  position?: Maybe<Coord>;
+  /** Milestone that we plan to address this issue in. */
+  milestone?: Maybe<string>;
+}
+
+/** Data for a custom field. */
+export interface CustomField {
+  key: string;
+
+  value: CustomValue;
+}
+
+/** File attachment. */
+export interface Attachment {
+  filename: string;
+
+  url: string;
+
+  thumbnail?: Maybe<string>;
+
+  type: string;
+}
+
+/** Defines a relationship between one issue and another. */
+export interface IssueLink {
+  /** ID of issue to which this is linked [projectId.id]. */
+  to: string;
+  /** Type of the relation. */
+  relation: Relation;
+}
+
+/** Represents a 2D coordinate. */
+export interface Coord {
+  x: number;
+
+  y: number;
+}
+
+/** Issue query result. */
+export interface PaginatedIssues {
+  /** Total number of results. */
+  count: number;
+  /** Current offset */
+  offset: number;
+  /** List of results. */
+  issues: Issue[];
 }
 
 export interface Mutation {
-    /** Create a user account */
-    createUserAccount?: Maybe<Account>;
-    /** Create an organization account */
-    createOrganizationAccount?: Maybe<Account>;
-    /** Update an account */
-    updateAccount?: Maybe<Account>;
-    /** Create a project */
-    createProject?: Maybe<Project>;
-    /** Update a project */
-    updateProject?: Maybe<Project>;
-    /** Remove a project */
-    removeProject: DeletionResult;
+  /** Create a user account */
+  createUserAccount?: Maybe<Account>;
+  /** Create an organization account */
+  createOrganizationAccount?: Maybe<Account>;
+  /** Update an account */
+  updateAccount?: Maybe<Account>;
+  /** Create a project */
+  createProject?: Maybe<Project>;
+  /** Update a project */
+  updateProject?: Maybe<Project>;
+  /** Remove a project */
+  removeProject: DeletionResult;
+  /** Store a template definition by name. */
+  setTemplate: JsonObject;
+  /** Create a new issue record. */
+  newIssue: Issue;
+  /** Update an existing issue record. */
+  updateIssue: Issue;
+  /** Delete an issue record. */
+  deleteIssue: Issue;
 }
 
 export interface DeletionResult {
-    id: string;
+  id: string;
 }
 
 export interface Subscription {
-    /** Signal account details have changed. Not restricted; all users can see public account details. */
-    accountChanged: PublicAccount;
-    /** Notify when any project within a group of project owners has been added, changed, or removed. */
-    projectsChanged: ProjectChange;
-    /** Watch a single project for changes. */
-    projectChanged: ProjectChange;
+  /** Signal account details have changed. Not restricted; all users can see public account details. */
+  accountChanged: PublicAccount;
+  /** Notify when any project within a group of project owners has been added, changed, or removed. */
+  projectsChanged: ProjectChange;
+  /** Watch a single project for changes. */
+  projectChanged: ProjectChange;
 }
 
 export interface ProjectChange {
-    project: Project;
+  project: Project;
 
-    action: ChangeAction;
+  action: ChangeAction;
+}
+
+/** Defines a relationship between one issue and another, includes both ends of the link. */
+export interface IssueArc {
+  /** ID of issue to which this is linked [projectId.id]. */
+  to: string;
+  /** ID of issue from which this is linked [projectId.id]. */
+  from: string;
+  /** Type of the relation. */
+  relation: Relation;
+}
+
+/** Project milestone */
+export interface Milestone {
+  /** ID of this milestone */
+  id: string;
+  /** Project milestone is part of */
+  project: string;
+  /** Title of this milestone */
+  name: string;
+  /** Current status */
+  status: MilestoneStatus;
+  /** Milestone description */
+  description: string;
+  /** Planned start date of milestone */
+  startDate?: Maybe<DateTime>;
+  /** Planned end date of milestone */
+  endDate?: Maybe<DateTime>;
 }
 
 // ====================================================
@@ -192,60 +511,105 @@ export interface ProjectChange {
 // ====================================================
 
 export interface AccountQueryArgs {
-    accountName?: Maybe<string>;
+  accountName?: Maybe<string>;
 
-    id?: Maybe<string>;
+  id?: Maybe<string>;
 }
 export interface AccountsQueryArgs {
-    token: string;
+  token: string;
 
-    type?: Maybe<AccountType>;
+  type?: Maybe<AccountType>;
 }
 export interface OrganizationMembersQueryArgs {
-    accountName: string;
+  accountName: string;
 }
 export interface ProjectQueryArgs {
-    owner?: Maybe<string>;
+  owner?: Maybe<string>;
 
-    name?: Maybe<string>;
+  name?: Maybe<string>;
 
-    id?: Maybe<string>;
+  id?: Maybe<string>;
 }
-export interface ProjectComponentsQueryArgs {
-    owner: string;
+export interface ProjectContextQueryArgs {
+  owner: string;
 
-    name: string;
+  name: string;
 }
 export interface ProjectMembersQueryArgs {
-    projectName: string;
+  projectName: string;
+}
+export interface TemplateQueryArgs {
+  owner: string;
+
+  name: string;
+}
+export interface IssueQueryArgs {
+  id: string;
+}
+export interface IssuesQueryArgs {
+  query: IssueQueryParams;
+
+  pagination?: Maybe<Pagination>;
+}
+export interface IssueSearchQueryArgs {
+  project: string;
+
+  search: string;
+}
+export interface SearchCustomFieldsQueryArgs {
+  project: string;
+
+  field: string;
+
+  search: string;
 }
 export interface CreateUserAccountMutationArgs {
-    input?: Maybe<AccountInput>;
+  input?: Maybe<AccountInput>;
 }
 export interface CreateOrganizationAccountMutationArgs {
-    input?: Maybe<AccountInput>;
+  input?: Maybe<AccountInput>;
 }
 export interface UpdateAccountMutationArgs {
-    input?: Maybe<AccountInput>;
+  input?: Maybe<AccountInput>;
 }
 export interface CreateProjectMutationArgs {
-    owner: string;
+  owner: string;
 
-    name: string;
+  name: string;
 
-    input?: Maybe<ProjectInput>;
+  input?: Maybe<ProjectInput>;
 }
 export interface UpdateProjectMutationArgs {
-    id: string;
+  id: string;
 
-    input?: Maybe<ProjectInput>;
+  input?: Maybe<ProjectInput>;
 }
 export interface RemoveProjectMutationArgs {
-    id: string;
+  id: string;
+}
+export interface SetTemplateMutationArgs {
+  owner: string;
+
+  name: string;
+
+  template: JsonObject;
+}
+export interface NewIssueMutationArgs {
+  project: string;
+
+  input: IssueInput;
+}
+export interface UpdateIssueMutationArgs {
+  id: string;
+
+  input: IssueInput;
+}
+export interface DeleteIssueMutationArgs {
+  id: string;
 }
 export interface ProjectsChangedSubscriptionArgs {
-    owners: string[];
+  owners: string[];
 }
 export interface ProjectChangedSubscriptionArgs {
-    project: string;
+  project: string;
 }

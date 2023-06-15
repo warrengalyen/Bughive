@@ -1,5 +1,5 @@
-import { Relation } from 'bughive-json-types';
 import { ObjectID } from 'mongodb';
+import { Relation } from '../../../../common/types/graphql';
 
 export interface IssueLinkRecord {
     _id?: ObjectID;
