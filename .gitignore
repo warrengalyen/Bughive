@@ -5,3 +5,4 @@ builds/
 /.env
 /.cache
 npm-debug.log
+/.idea

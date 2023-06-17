@@ -14,6 +14,7 @@ import { ProjectContextProvider } from '../graphql/ProjectContextProvider';
 import { ProjectSettings } from '../projects/settings/ProjectSettings';
 import { IssueListView } from '../issues/IssueListView';
 import { IssueCreateView } from '../issues/IssueCreateView';
+import { LabelListView } from '../labels/LabelListView';
 
 const MainPageLayout = styled(Page)`
   display: grid;
@@ -87,11 +88,11 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
                                             ? <span>Loading</span>
                                             : (
                                                 <Switch>
-                                                    <Route
-                                                        path="/:owner/:name/new"
-                                                        render={props => <IssueCreateView {...props} context={context} />}
-                                                    />
-                                                    {/* <Route
+                        <Route
+                            path="/:owner/:name/new"
+                            render={props => <IssueCreateView {...props} context={context} />}
+                        />
+                        {/* <Route
                           path="/:owner/:name/edit/:id"
                           render={props => <IssueEditView {...props} {...models} />}
                         />
@@ -99,15 +100,15 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
                           path="/:owner/:name/:id(\d+)"
                           render={props => (<IssueDetailsView {...props} {...models} />)}
                         /> */}
-                                                    <Route
-                                                        path="/:owner/:name/issues"
-                                                        exact={true}
-                                                        render={props => (<IssueListView {...props} context={context}/>)}
-                                                    />
-                                                    {/* <Route
-                          path="/:owner/:name/labels"
-                          exact={true}
-                          render={() => (<LabelListView {...models} />)}
+                        <Route
+                            path="/:owner/:name/issues"
+                            exact={true}
+                            render={props => (<IssueListView {...props} context={context}/>)}
+                        />
+                        <Route
+                              path="/:owner/:name/labels"
+                              exact={true}
+                              render={() => (<LabelListView context={context} />)}
                         />
                         <Route
                           path="/:owner/:name/filters"
