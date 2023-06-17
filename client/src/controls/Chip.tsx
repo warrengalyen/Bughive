@@ -39,6 +39,8 @@ export const Chip = styled(ChipImpl).attrs(props => ({
   margin-right: 3px;
   padding: 0 5px;
   user-select: none;
+  white-space: nowrap;
+
   .title {
     margin-right: 4px;
     margin-left: 4px;
@@ -55,6 +57,8 @@ export const Chip = styled(ChipImpl).attrs(props => ({
     margin-right: -4px;
     outline: none;
     padding: 0;
+    position: relative;
+    top: 1px;
     width: 16px;
     font-weight: bold;
     &:hover {

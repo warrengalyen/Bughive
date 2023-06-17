@@ -54,10 +54,18 @@ export const Project = gql`
 
   "Query result that returns project, owner account and memberships in a single operation."
   type ProjectContext {
+    "Project record"
     project: Project!
+
+    "Account that owns the project"
     account: PublicAccount!
-    # Prefs
+
+    "Current user's project preferences"
+    prefs: ProjectPrefs!
+
     # Milestones
+
+    "Templates for this project"
     template: JSONObject!
   }
 `;
