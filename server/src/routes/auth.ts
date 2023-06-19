@@ -187,7 +187,7 @@ authRouter.post('/signup', handleAsyncErrors(async (req, res) => {
     if (email.length < 3) {
         res.status(400).json({ error: Errors.INVALID_EMAIL });
     } else if (password.length < 5) {
-        res.status(400).json({ error: Errors.TEXT_TOO_SHORT });
+    res.status(400).json({ error: Errors.PASSWORD_TOO_SHORT });
     } else {
         // console.log('signup', username, fullname);
         const users = await server.db.collection('accounts').find({ email }).toArray();

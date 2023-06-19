@@ -22,6 +22,7 @@
   "author": "Warren Galyen",
   "license": "Apache-2.0",
   "dependencies": {
+    "@apollo/client": "^3.7.15",
     "apollo": "^2.4.4",
     "apollo-boost": "^0.1.27",
     "apollo-cache-inmemory": "^1.4.2",
@@ -47,6 +48,7 @@
     "graphql": "^14.1.1",
     "graphql-subscriptions": "^1.0.0",
     "graphql-tag": "^2.10.1",
+    "graphql-ws": "^5.13.1",
     "history": "^4.7.2",
     "js-yaml": "^3.12.1",
     "jwt-simple": "^0.5.5",

@@ -10,8 +10,8 @@ import { session } from '../models';
 import { OperationDefinitionNode } from 'graphql';
 
 const wsLink = new WebSocketLink({
-    uri: `ws://${window.location.host}/graphql`,
-    options: {
+  uri: `ws://${window.location.host}/graphql`,
+  options: {
         reconnect: true,
         connectionParams: () => session ? { ...session.headers } : {},
     }

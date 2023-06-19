@@ -1,4 +1,4 @@
-mport * as React from 'react';
+import * as React from 'react';
 import { Issue as IssueData } from 'bughive-json-types';
 import { IssueListQuery, Project } from '../../../models';
 import { Autocomplete, SearchCallback } from '../../ac/Autocomplete';

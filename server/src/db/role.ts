@@ -17,13 +17,14 @@ export async function getProjectRole(
     // the project. Note that if the project is owned by a user, then there should be
     // no organization with the owner's id.
     try {
+        // @ts-ignore
         const memberships = await db.collection('memberships').find<MembershipRecord>({
             user: user._id,
             $or: [
                 { organization: project.owner },
                 { project: project._id },
             ]
-        }, {  }).toArray();
+    }).toArray();
 
         // Return whichever role is higher.
         return Math.max(...memberships.map(m => m.role));

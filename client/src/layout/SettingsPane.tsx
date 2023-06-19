@@ -1,7 +1,6 @@
 import { Card } from '../controls';
 import { styled } from '../style';
 
-// @ts-ignore
 export const SettingsPane = styled(Card)`
   flex: 1;
   > header {

@@ -24,8 +24,8 @@ export const Root = gql`
 
 export const typeDefs = [
     Account,
+  Issue,
     Label,
-    Issue,
     Membership,
     Milestone,
     Mutation,

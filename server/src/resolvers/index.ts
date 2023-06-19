@@ -3,8 +3,8 @@ import * as accounts from './account';
 import * as issues from './issues';
 import * as labels from './labels';
 import * as memberships from './memberships';
-import * as projectPrefs from './projectPrefs';
 import * as projects from './projects';
+import * as projectPrefs from './projectPrefs';
 import * as templates from './template';
 
 export const resolverMap = {

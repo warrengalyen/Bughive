@@ -71,7 +71,6 @@ function Buttons() {
                     Medium
                 </LinkButton>
             </DisplayGroup>
-            <header>NavButton</header>
             <header>NavLink</header>
             <DisplayGroup className="row">
                 <NavLink to="/cards">Cards</NavLink>
