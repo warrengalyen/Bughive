@@ -57,6 +57,27 @@ const EmptyList = styled.section`
   font-style: italic;
 `;
 
+const LabelListViewTable = styled(Table)`
+  .label-id {
+    width: 2rem;
+  }
+  .visible {
+    width: 3rem;
+    > * {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+  }
+  .name {
+    width: 12rem;
+  }
+  .actions {
+    width: 10rem;
+  }
+`;
+
 interface Props {
     context: ViewContext;
 }
@@ -147,7 +168,7 @@ export class LabelListView extends React.Component<Props> {
                         }
                         return (
                             <Card>
-                                <Table>
+                                <LabelListViewTable>
                                     <TableHead>
                                         <tr>
                                             <th className="label-id center">#</th>
@@ -161,7 +182,7 @@ export class LabelListView extends React.Component<Props> {
                                     <TableBody>
                                         {labels.map(i => this.renderLabel(i))}
                                     </TableBody>
-                                </Table>
+                                </LabelListViewTable>
                             </Card>
                         );
                     }
