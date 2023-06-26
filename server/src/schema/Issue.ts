@@ -38,12 +38,12 @@ export const Issue = gql`
     "Data for a custom field."
     type CustomField {
         key: String!
-        value: CustomValue!
+        value: CustomValue
     }
     "Input for a custom field."
     input CustomFieldInput {
         key: String!
-        value: CustomValue!
+        value: CustomValue
     }
     "Represents a 2D coordinate."
     type Coord {
