@@ -1,11 +1,5 @@
 import * as React from 'react';
 import * as qs from 'qs';
-// import {
-//   IssueListQuery,
-//   ObservableProjectPrefs,
-//   ObservableSet,
-//   Project,
-// } from '../../models';
 import { RouteComponentProps } from 'react-router-dom';
 import { GroupHeader } from './GroupHeader';
 import { IssueListEntry } from './IssueListEntry';
@@ -40,22 +34,6 @@ interface QueryParams { [param: string]: string; }
 
 @observer
 export class IssueListView extends React.Component<Props> {
-    private queryParams: QueryParams = {};
-    private selectAllEl: HTMLInputElement;
-    @observable private selection = new ObservableSet();
-
-    public componentWillMount() {
-        const { location, issues, project } = this.props;
-        this.queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
-        issues.setFromQuery(project, this.queryParams);
-        this.updateSelectAll();
-    }
-
-    public componentWillReceiveProps(nextProps: Props) {
-        const { location, issues, project } = nextProps;
-        this.queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
-        issues.setFromQuery(project, this.queryParams);
-    }
 
     public render() {
         const { account, issues, project } = this.props;

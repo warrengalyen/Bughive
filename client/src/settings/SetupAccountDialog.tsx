@@ -137,7 +137,7 @@ export class SetupAccountDialog extends React.Component<{}> {
                 }
             },
         }).then(result => {
-            console.log(result);
+            console.debug(result);
             session.reload();
             this.busy = false;
         }, error => {

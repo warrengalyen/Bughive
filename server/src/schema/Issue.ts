@@ -186,9 +186,9 @@ export const Issue = gql`
         "Search predicate for the description field."
         descriptionPred: Predicate
         "Query term that restricts the issue search to a set of label ids."
-        labels: [Int!]
+        labels: [String!]
         "Specifies a list of linked issues to search for."
-        linked: [Int!]
+        linked: [String!]
         "Query term that searches the issue comments."
         comment: String
         "'Search predicate for the comments"

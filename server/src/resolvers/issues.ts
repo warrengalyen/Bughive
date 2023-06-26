@@ -87,6 +87,7 @@ export const queries = {
         _: any,
         { query, pagination }: IssuesQueryArgs,
         context: Context): Promise<PaginatedIssueRecords> {
+
         const user = context.user ? context.user.accountName : null;
         const { project, role } = await getProjectAndRole(
             context.db, context.user, new ObjectID(query.project));
@@ -163,17 +164,8 @@ export const queries = {
         }
 
         // Match any label
-        if (query.labels) {
-            //   const labels = toArray(args.labels).map(l => `${account}/${project}/${l}`);
-            //   if (labels) {
-            //     const e = labels.reduce((expr: r.Expression<boolean>, label) => {
-            //       const term = r.row('labels').contains(label);
-            //       return expr ? expr.or(term) : term;
-            //     }, null);
-            //     if (e) {
-            //       filters.push(e);
-            //     }
-            //   }
+        if (query.labels && query.labels.length > 0) {
+            filter.labels = { $in: query.labels };
         }
 
         // Match any cc
@@ -308,20 +300,25 @@ export const mutations = {
             created: now,
             updated: now,
             cc: (input.cc || []).map(id => new ObjectID(id)),
-            labels: (input.labels || []).map(id => new ObjectID(id)),
+            labels: (input.labels || []),
             custom: input.custom ? customArrayToMap(input.custom) : {},
             attachments: input.attachments || [],
             isPublic: !!input.isPublic,
         };
 
-        if (input.owner && !context.user._id.equals(input.owner)) {
-            const owner = await context.db.collection('issues')
-                .findOne<AccountRecord>({ _id: new ObjectID(input.owner) });
-            if (!owner) {
-                throw new UserInputError(Errors.NOT_FOUND, { field: 'owner' });
+        if (input.owner) {
+            if (context.user._id.equals(input.owner)) {
+                record.owner = context.user._id;
+                record.ownerSort = context.user.accountName;
+            } else {
+                const owner = await context.db.collection('issues')
+                    .findOne<AccountRecord>({ _id: new ObjectID(input.owner) });
+                if (!owner) {
+                    throw new UserInputError(Errors.NOT_FOUND, { field: 'owner' });
+                }
+                record.owner = owner._id;
+                record.ownerSort = owner.accountName;
             }
-            record.owner = owner._id;
-            record.ownerSort = owner.accountName;
         }
 
         const commentsToInsert: CommentRecord[] = (input.comments || []).map(comment => ({

@@ -1,20 +1,21 @@
 import * as React from 'react';
-import { observer } from 'mobx-react';
-import { RouteComponentProps, Switch, Route, Redirect } from 'react-router';
-import { ToastContainer } from 'react-toastify';
-import { Page } from '../layout';
-import { Header } from '../header/Header';
-import { LeftNav } from '../nav/LeftNav';
-import { styled } from '../style';
-import { ProjectListView } from '../projects/ProjectListView';
-import { session, ViewContext } from '../models';
-import { SetupAccountDialog } from '../settings/SetupAccountDialog';
-import { SettingsView } from '../settings/SettingsView';
-import { ProjectSettings } from '../projects/settings/ProjectSettings';
-import { IssueListView } from '../issues/IssueListView';
-import { IssueCreateView } from '../issues/IssueCreateView';
-import { LabelListView } from '../labels/LabelListView';
-import { ViewContextProvider } from './ViewContextProvider';
+import {observer} from 'mobx-react';
+import {RouteComponentProps, Switch, Route, Redirect} from 'react-router';
+import {ToastContainer} from 'react-toastify';
+import {Page} from '../layout';
+import {Header} from '../header/Header';
+import {LeftNav} from '../nav/LeftNav';
+import {styled} from '../style';
+import {ProjectListView} from '../projects/ProjectListView';
+import {session, ViewContext} from '../models';
+import {SetupAccountDialog} from '../settings/SetupAccountDialog';
+import {SettingsView} from '../settings/SettingsView';
+import {ProjectSettings} from '../projects/settings/ProjectSettings';
+import {IssueListView} from '../issues/IssueListView';
+import {IssueCreateView} from '../issues/IssueCreateView';
+import {LabelListView} from '../labels/LabelListView';
+import {ViewContextProvider} from './ViewContextProvider';
+import {IssueEditView} from '../issues/IssueEditView';
 
 const MainPageLayout = styled(Page)`
   display: grid;
@@ -45,6 +46,7 @@ const ContentPaneLayout = styled.section`
 @observer
 export class MainPage extends React.Component<RouteComponentProps<{}>> {
     private viewContext = new ViewContext();
+
     // private memberships: Memberships;
 
     public componentWillMount() {
@@ -74,12 +76,12 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
                     hideProgressBar={true}
                     newestOnTop={false}
                 />
-                <Header context={this.viewContext} />
-                <LeftNav context={this.viewContext} />
+                <Header context={this.viewContext}/>
+                <LeftNav context={this.viewContext}/>
                 <ContentPaneLayout>
                     <Switch>
-                        <Route path="/settings" component={SettingsView} />
-                        <Route path="/projects" component={ProjectListView} />
+                        <Route path="/settings" component={SettingsView}/>
+                        <Route path="/projects" component={ProjectListView}/>
                         <Route
                             path="/:owner/:name"
                             render={
@@ -90,23 +92,24 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
                                                 path="/:owner/:name/new"
                                                 render={props => <IssueCreateView {...props} context={this.viewContext} />}
                                             />
+                                            <Route
+                                                path="/:owner/:name/edit/:id"
+                                                render={props => <IssueEditView {...props} context={this.viewContext}/>}
+                                            />
                                             {/* <Route
-                        path="/:owner/:name/edit/:id"
-                        render={props => <IssueEditView {...props} {...models} />}
-                      />
-                      <Route
-                        path="/:owner/:name/:id(\d+)"
-                        render={props => (<IssueDetailsView {...props} {...models} />)}
-                      /> */}
+                                                path="/:owner/:name/:id(\d+)"
+                                                render={props => (<IssueDetailsView {...props} {...models} />)}
+                                              /> */}
                                             <Route
                                                 path="/:owner/:name/issues"
                                                 exact={true}
-                                                render={props => (<IssueListView {...props} context={this.viewContext}/>)}
+                                                render={props => (
+                                                    <IssueListView {...props} context={this.viewContext}/>)}
                                             />
                                             <Route
                                                 path="/:owner/:name/labels"
                                                 exact={true}
-                                                render={() => (<LabelListView context={this.viewContext} />)}
+                                                render={() => (<LabelListView context={this.viewContext}/>)}
                                             />
                                             {/* <Route
                         path="/:owner/:name/filters"
@@ -132,17 +135,17 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
                                                 path="/:owner/:name/settings/:tab?"
                                                 exact={true}
                                                 render={props => (
-                                                    <ProjectSettings {...props} context={this.viewContext} />)}
+                                                    <ProjectSettings {...props} context={this.viewContext}/>)}
                                             />
                                         </Switch>
                                     )}
                                 </ViewContextProvider>}
                         />
-                        <Redirect path="/" exact={true} to="/projects" />
+                        <Redirect path="/" exact={true} to="/projects"/>
                     </Switch>
                 </ContentPaneLayout>
                 {/* {showEmailVerification && <EmailVerificationDialog />} */}
-                {!showEmailVerification && showSetupAccount && <SetupAccountDialog />}
+                {!showEmailVerification && showSetupAccount && <SetupAccountDialog/>}
             </MainPageLayout>
         );
     }

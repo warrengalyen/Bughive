@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { FieldType } from 'bughive-json-types';
-import { ObservableSet } from '../../../models';
-import { action } from 'mobx';
+import { action, ObservableSet } from 'mobx';
 import { observer } from 'mobx-react';
 import { CheckBox } from '../../controls';
+import { FieldType } from '../../../../common/types/json';
 
 interface Props {
     field: FieldType;
