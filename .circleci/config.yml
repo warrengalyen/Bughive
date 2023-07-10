@@ -10,7 +10,7 @@ jobs:
           MONGO_INITDB_DATABASE: bughive-circleci
     environment:
       NODE_ENV: development
-      DB_HOST: mongodb://localhost:27017
+      DB_HOST: "mongodb://localhost:27017"
       DB_NAME: bughive-circleci
       DB_USER: bughive-admin
       DB_PASSWORD: example
