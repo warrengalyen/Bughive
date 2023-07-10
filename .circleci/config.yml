@@ -1,0 +1,29 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10.15
+      - image: circleci/mongo:4.0.5
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: bughive-admin
+          MONGO_INITDB_ROOT_PASSWORD: example
+          MONGO_INITDB_DATABASE: bughive-circleci
+    environment:
+      NODE_ENV: development
+      DB_HOST: mongodb://localhost:27017
+      DB_NAME: bughive-circleci
+      DB_USER: bughive-admin
+      DB_PASSWORD: example
+      LOG_LEVEL: debug
+      CLIENT_PROXY: 'false'
+      JWT_SECRET: not-so-secret
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run: npm run test
