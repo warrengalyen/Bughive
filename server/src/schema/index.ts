@@ -1,6 +1,7 @@
 import { gql } from 'apollo-server-express';
 import { Account } from './Account';
 import { Issue } from './Issue';
+import { IssueChanges } from './IssueChanges';
 import { Label } from './Label';
 import { Membership } from './Membership';
 import { Milestone } from './Milestone';
@@ -24,7 +25,8 @@ export const Root = gql`
 
 export const typeDefs = [
     Account,
-  Issue,
+    Issue,
+    IssueChanges,
     Label,
     Membership,
     Milestone,

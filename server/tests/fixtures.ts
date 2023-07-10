@@ -17,6 +17,7 @@ export interface TestServer {
     db: Db;
     context: Context;
     close: () => Promise<any>;
+    users: { [name: string]: AccountRecord };
 }
 
 export async function createTestUserAccount(
@@ -40,6 +41,7 @@ export async function constructTestServer(): Promise<TestServer> {
     const client = await createClient();
     const db = client.db(process.env.DB_NAME);
     const user = await createTestUserAccount(db, 'warreng', 'Warren Galyen');
+    const kitten = await createTestUserAccount(db, 'kitten', '"Paws" Jones');
     const context: Context = { client, db, user };
     const apollo = new ApolloServer({
         typeDefs,
@@ -50,7 +52,7 @@ export async function constructTestServer(): Promise<TestServer> {
         await apollo.stop();
         await client.close();
     };
-    return { client, db, context, apollo, close };
+    return { client, db, context, apollo, close, users: { warreng: user, kitten } };
 }
 
 const CreateProjectMutation = gql`mutation CreateProjectMutation(
