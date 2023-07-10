@@ -1,5 +1,7 @@
 # Bughive
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/warrengalyen/Bughive/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/warrengalyen/Bughive/tree/master)
+
 Bughive is a bug tracking and project management application
 
 # Running locally
