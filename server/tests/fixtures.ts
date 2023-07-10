@@ -43,6 +43,7 @@ export async function constructTestServer(): Promise<TestServer> {
     const user = await createTestUserAccount(db, 'warreng', 'Warren Galyen');
     const kitten = await createTestUserAccount(db, 'kitten', '"Paws" Jones');
     const context: Context = { client, db, user };
+    logger.debug(JSON.stringify(context.user, null, 2));
     const apollo = new ApolloServer({
         typeDefs,
         context,
