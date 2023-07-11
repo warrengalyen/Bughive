@@ -18,9 +18,8 @@ import gql from 'graphql-tag';
 import { fragments } from '../graphql';
 import { client } from '../graphql/client';
 import bind from 'bind-decorator';
-import { GraphQLError } from 'graphql';
 import { IssueQueryModel } from './IssueQueryModel';
-
+import { ApolloError } from 'apollo-client';
 export const ProjectEnv = React.createContext<ViewContext>(null);
 
 const ProjectContextQuery = gql`
@@ -60,7 +59,7 @@ export class ViewContext {
     @observable public projectName: string;
     @observable public accountName: string;
     @observable public loading = true;
-    @observable public errors: ReadonlyArray<GraphQLError> = null;
+    @observable public error: Partial<ApolloError> = null;
     @observable public project: Project = null;
     @observable public account: PublicAccount = null;
     @observable public template: Template = null;
@@ -186,8 +185,8 @@ export class ViewContext {
         this.subscription = queryResult.subscribe(result => {
             const { data, loading, errors } = result;
             this.loading = loading;
-            this.errors = errors;
-            if (!this.loading && !this.errors) {
+            this.error = errors ? { graphQLErrors: errors } : null;
+            if (!this.loading && !this.error) {
                 if (this.unsubscribeHandle) {
                     this.unsubscribeHandle();
                     this.unsubscribeHandle = null;
@@ -210,6 +209,8 @@ export class ViewContext {
 
                 this.update(data.projectContext);
             }
+        }, error => {
+            this.error = error;
         });
     }
 

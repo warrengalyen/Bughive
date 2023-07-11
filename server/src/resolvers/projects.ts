@@ -53,7 +53,7 @@ export const queries = {
         const project = await projects.findOne<ProjectRecord>(query);
         if (!project) {
             logger.error('Attempt to fetch non-existent project:', { user, ...args });
-            throw new UserInputError(Errors.NOT_FOUND);
+            throw new UserInputError(Errors.NOT_FOUND, { object: 'project' });
         }
 
         // Look up user membership
@@ -66,7 +66,7 @@ export const queries = {
         } else if (!project.isPublic) {
             // If project is not public, then ensure that user is a member.
             logger.error('Attempt to access private project:', { user, ...args });
-            throw new UserInputError(Errors.NOT_FOUND);
+            throw new UserInputError(Errors.NOT_FOUND, { object: 'project' });
         }
 
         return { ...project, role };
@@ -109,7 +109,7 @@ export const queries = {
             .findOne<AccountRecord>({ accountName: owner });
         if (!account) {
             logger.error('Attempt to fetch non-existent account:', { user, owner });
-            throw new UserInputError(Errors.NOT_FOUND);
+            throw new UserInputError(Errors.NOT_FOUND, { object: 'account' });
         }
 
         // Look up project
@@ -117,7 +117,7 @@ export const queries = {
         const project = await projects.findOne<ProjectRecord>({ owner: account._id, name });
         if (!project) {
             logger.error('Attempt to fetch non-existent project:', { user, owner, name });
-            throw new UserInputError(Errors.NOT_FOUND);
+            throw new UserInputError(Errors.NOT_FOUND, { object: 'project' });
         }
 
         const role = await getProjectRole(context.db, context.user, project);
@@ -248,12 +248,12 @@ export const mutations = {
         const { project, role } = await getProjectAndRole(context.db, context.user, new ObjectID(id));
         if (!project) {
             logger.error('Attempt to update non-existent project:', { user, id });
-            throw new UserInputError(Errors.NOT_FOUND);
+            throw new UserInputError(Errors.NOT_FOUND, { object: 'project' });
         }
 
         if (role < Role.MANAGER) {
             logger.error('Insufficient permissions to update project:', { user, id });
-            throw new UserInputError(Errors.FORBIDDEN);
+            throw new UserInputError(Errors.FORBIDDEN, { object: 'project' });
         }
 
         const update: Partial<ProjectRecord> = {};
@@ -297,7 +297,7 @@ export const mutations = {
         const { project, role } = await getProjectAndRole(context.db, context.user, new ObjectID(id));
         if (!project) {
             logger.error('Attempt to delete non-existent project:', { user, id });
-            throw new UserInputError(Errors.NOT_FOUND);
+            throw new UserInputError(Errors.NOT_FOUND, { object: 'project' });
         }
 
         if (role < Role.MANAGER) {
