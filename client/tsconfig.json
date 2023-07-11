@@ -12,7 +12,7 @@
         "emitDecoratorMetadata": true,
         "esModuleInterop": true,
         "types": [
-            "dom",
+            "jest",
             "node"
         ]
     },
