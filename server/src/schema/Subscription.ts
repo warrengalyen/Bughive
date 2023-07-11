@@ -24,7 +24,7 @@ export const Subscription = gql`
 
     type IssueChange {
         action: ChangeAction!
-        issue: Issue!
+        value: Issue!
     }
 
     type Subscription {
@@ -41,7 +41,6 @@ export const Subscription = gql`
         labelChanged(project: ID!): LabelChange!
 
         # Issue changed
-        # Issues changed
 
         "Watch for changes to project prefs (current user)."
         prefsChanged(project: ID!): ProjectPrefsChange!
